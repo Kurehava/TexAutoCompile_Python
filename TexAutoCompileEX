@@ -135,7 +135,9 @@ def autochkfile():
     
     if len(fakerelpath)>0:
         inputbaner=(banner+"\n"+scibanner+"\n")
-        for cunter in range(len(fakerelpath)):inputbaner=(inputbaner+str(cunter+1)+"."+fakerelpath[cunter])
+        for cunter in range(len(fakerelpath)):
+            if cunter+1==len(fakerelpath):inputbaner=(inputbaner+str(cunter+1)+"."+fakerelpath[cunter])
+            else:inputbaner=(inputbaner+str(cunter+1)+"."+fakerelpath[cunter]+"\n")
         strin=inputcheck(rope+"\n"+"If you want to compile list file input the file number or input '0' to mainmenu.>>",inputbaner,"",r"\D",len(fakerelpath))
         if strin=="0":navichk=2
         elif strin=="":fnprocess(fakerelpath[1]);navichk=3
