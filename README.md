@@ -1,6 +1,6 @@
 # TexAutoCompile_Python
 
-# How to use?
+## How to use?
 
 First ,you need install python for any version.
 
