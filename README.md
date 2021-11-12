@@ -20,4 +20,4 @@ Windows:
 
 Linux:
 
-`python TexAutoCompileEX`
+  `python TexAutoCompileEX`
