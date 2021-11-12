@@ -5,7 +5,6 @@
 #Github:https://github.com/orikiringi
 ##############################################################################
 import os,platform,getpass,time,re,sys,subprocess
-if str(subprocess.getstatusoutput("platex -ver")[0]) != "0":print("Please install TexLive FIRST!!!!!");exit()
 err=0;navichk=1;abspath=relpath=osname=relname=""
 osname=platform.system()
 if osname == 'Windows':os.system("mode con cols=79 lines=20");clearswich="cls"
@@ -32,6 +31,7 @@ banner=(
     "                                                           |_|               \n"
     "============================================================================="
 "\033[96m")
+if str(subprocess.getstatusoutput("platex -ver")[0]) != "0":print(banner+"\n"+rope+"\nPlease install TexLive FIRST!!!!!");exit()
 scibanner=("Script User : %s \nScript Path : %s \n%s" % (sciuser,scipath,rope))
 maintip=("[E]exit\n[D]delete extras file\n[H]history\n%s" % rope)
 def navigation(num):
