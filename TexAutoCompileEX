@@ -5,6 +5,7 @@
 #Github:https://github.com/orikiringi
 ##############################################################################
 import os,platform,getpass,time,re,sys,subprocess
+if str(subprocess.getstatusoutput("platex -ver")[0]) != "0":print("Please install TexLive FIRST!!!!!");exit()
 err=0;navichk=1;abspath=relpath=osname=relname=""
 osname=platform.system()
 if osname == 'Windows':os.system("mode con cols=79 lines=20");clearswich="cls"
@@ -206,5 +207,6 @@ def submenu():
         else :err=1
 
 if __name__=='__main__':
+    
     while 1:
         navigation(navichk)
