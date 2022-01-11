@@ -1,11 +1,10 @@
-#!/usr/bin/env python3
 ##############################################################################
-#TexAutoCompile LastVersion 0.9.3 new ver for shellscript refactored to python
+#TexAutoCompile LastVersion 0.9.4 new ver for shellscript refactored to python
 #Powered by orikiringi Belonging to KanagawaUniversity MoritaLab
 #Github:https://github.com/orikiringi
 ##############################################################################
 import os,platform,getpass,time,re,sys,subprocess
-err=0;navichk=1;abspath=relpath=osname=relname=""
+err=0;navichk=1;abspath=relpath=osname=relname=namepath=""
 osname=platform.system()
 if osname == 'Windows':os.system("mode con cols=79 lines=20");clearswich="cls"
 elif osname == "Linux" or osname == "Darwin":os.system("printf '\033[8;20;79t'");clearswich="clear";#os.system("while sleep 1;do tput sc;tput cup 0 $(($(tput cols)-40));date;tput rc;done&")
@@ -15,6 +14,7 @@ if osname in {"Linux","Darwin"}:
     homepath=str(subprocess.Popen("echo ~",stdout=subprocess.PIPE,shell=True).communicate()).split(",")[0].split("'")[1].split("\\")[0]
 elif osname == "Windows":
     hispath="c:/Users/"+str(subprocess.Popen("whoami",stdout=subprocess.PIPE,shell=True).communicate()).split(",")[0].split("'")[1].replace(r"\n","").replace(r"\r","").split(r"\\")[1]+"/.tachistory.his"
+    hisnpath="c:/Users/"+str(subprocess.Popen("whoami",stdout=subprocess.PIPE,shell=True).communicate()).split(",")[0].split("'")[1].replace(r"\n","").replace(r"\r","").split(r"\\")[1]+"/.tachistory.hisn"
     homepath="c:/Users/"+str(subprocess.Popen("whoami",stdout=subprocess.PIPE,shell=True).communicate()).split(",")[0].split("'")[1].replace(r"\n","").replace(r"\r","").split(r"\\")[1]
 sciuser=getpass.getuser()
 scipath=os.path.dirname(os.path.abspath(__file__))+"/"
@@ -62,14 +62,22 @@ def sciexit():
     elif osname == "Darwin":os.system("osascript -e 'tell application \"Terminal\" to close first window' & exit")
 
 def fnprocess(argv):
-    global relpath;global relname;global abspath
+    global relpath;global relname;global abspath;global namepath
     relpath=argv.rstrip()
     abspath=os.path.dirname(argv)+"/"
-    relname=os.path.splitext(relpath)[0]
+    namepath=os.path.splitext(relpath)[0]
+    relname=str(os.path.splitext(relpath)[0])
+    if osname == "Windows":
+        relpath=relpath.replace("/","\\")
+        relname=relname.replace("/","\\")
+        abspath=abspath.replace("&","`&").replace(r" ",r"` ")
+        relname=relname.split("\\")[-1]
     if not os.path.exists(hispath):open(hispath,"w").close()
 
 def cleanner(argv):
-    ext=["aux","dvi","log","nav","out","snm","toc","fls","fdb_latexmk","synctex.gz","vrb","bcf","blg","bbl","run.xml"]
+    global relname,abspath
+    ext=["aux","dvi","log","nav","out","snm","toc","fls","fdb_latexmk","synctex.gz","vrb","bcf","blg","bbl","run.xml","idx","lof","lot"]
+    if osname=="Windows":baknamer=relname;baknamea=abspath;abspath=abspath.replace("`","");relname=abspath+relname
     if argv == "know":
         for extit in ext:
             if os.path.exists(relname+"."+extit):os.remove(relname+"."+extit)
@@ -79,21 +87,25 @@ def cleanner(argv):
             #if os.path.splitext(listfn)[1]=="."+ext:os.remove(scipath+listfn)
             if any("."+exts in os.path.splitext(listfn)[1] for exts in ext):os.remove(scipath+listfn)
         os.system(clearswich)
+    if osname=="Windows":relname=baknamer;abspath=baknamea
 
 def compile():
     global navichk,relpath,abspath,relname
-    if not os.path.exists(relname+".tex"):
+    if not os.path.exists(namepath+".tex"):
         os.system(clearswich)
         print(banner+"\033[93m\nWarning:\nThe target file was suddenly not detected,\nPlease don't move or delete the target file After confirming the compiled file.\033[96m")
         time.sleep(8)
         navichk=2
     else:
         if osname == "Windows":
-            relpath=relpath.replace("/","\\");abspath=abspath.replace("/","\\");relname=relname.replace("/","\\")
-        os.system("cd \"%s\" && platex \"%s.tex\"" % (abspath,relname))
-        os.system("cd \"%s\" && pbibtex \"%s.tex\"" % (abspath,relname))
-        os.system("cd \"%s\" && platex \"%s.tex\" && platex \"%s.tex\" && dvipdfmx \"%s.dvi\"" % (abspath,relname,relname,relname))
-        if osname == "Windows":os.startfile("%s.pdf" % relname)
+            os.system('powershell cd "%s" ; platex "%s.tex"' % (abspath,relname))
+            os.system("powershell cd \"%s\" ; pbibtex \"%s.tex\"" % (abspath,relname))
+            os.system("powershell cd \"%s\" ; platex \"%s.tex\" ; platex \"%s.tex\" ; dvipdfmx \"%s.dvi\"" % (abspath,relname,relname,relname))
+        else:
+            os.system("cd \"%s\" && platex \"%s.tex\"" % (abspath,relname))
+            os.system("cd \"%s\" && pbibtex \"%s.tex\"" % (abspath,relname))
+            os.system("cd \"%s\" && platex \"%s.tex\" && platex \"%s.tex\" && dvipdfmx \"%s.dvi\"" % (abspath,relname,relname,relname))
+        if osname == "Windows":os.system('powershell "%s.pdf"' % (abspath+relname)) 
         elif osname == "Linux":subprocess.call(["xdg-open","%s.pdf" % relname]) #os.system("evince '%s.pdf' 2>/dev/null &" % relname)
         elif osname == "Darwin":subprocess.call(["open","%s.pdf" % relname]) #os.system("open '%s.pdf'" % relname)
         cleanner("know");navichk=6
@@ -105,11 +117,12 @@ def compile():
 def tachistory():
     failfilelist=[];alllist=(banner+"\n");count=1;global navichk
     if os.path.exists(hispath.rstrip()):
-        with open(hispath,'r',encoding = 'utf-8') as fr,open(hisnpath,'w',encoding = 'utf-8') as fd:
+        with open(hispath,'r') as fr,open(hisnpath,'w') as fd:
             for line in fr.readlines():
                 if line=='\n':line=line.strip('\n')
                 fd.write(line)
-            os.remove(hispath);os.rename(hisnpath,hispath)
+        fr.close();fd.close();fr.flush;fd.flush
+        os.remove(hispath);os.rename(hisnpath,hispath)
         with open(hispath, "r") as sources:lines = sources.readlines()
         for pathcheck in lines:
             pathcheck=pathcheck.rstrip()
@@ -139,14 +152,14 @@ def tachistory():
             if valuec in "Yy":
                 with open(hispath, "r") as sources:linesq = sources.readlines()
                 with open(hispath, "w") as sources:
-                    for line in linesq:sources.write(re.sub(nlines[int(value)], "", line))
+                    for line in linesq:sources.write(re.sub(nlines[int(value)-1], "", line))
             else:navichk=4
         else:fnprocess(nlines[int(value)-1]);navichk=3
     else:os.system(clearswich);print(banner+"\n"+scibanner);print("No history is detected, return to the main menu after 3 seconds.");time.sleep(3);navichk=2
 
 def autochkfile():
     nowtime=time.time();fakerelpath=[];os.system(clearswich);print(banner+"\n"+scibanner);global navichk;global relpath;global err
-    if osname=="Windows":chkpath=["c:\\users\\"]
+    if osname=="Windows":chkpath=["D:/OneDrive - 学校法人神奈川大学"]
     elif osname in {"Linux","Darwin"}:chkpath=[homepath+"/Desktop",homepath+"/Document"]
     for path2go in chkpath:
         for path,dir_list,file_list in os.walk(path2go):  
@@ -156,8 +169,8 @@ def autochkfile():
                     fakerelpath.append(relpath)
     
     if len(fakerelpath)>0:
-        inputbaner=(banner+"\n"+scibanner+"\n")
-        for cunter in range(len(fakerelpath)):inputbaner=(inputbaner+str(cunter+1)+"."+fakerelpath[cunter])
+        inputbaner=(banner+"\n"+scibanner)
+        for cunter in range(len(fakerelpath)):inputbaner=(inputbaner+"\n"+str(cunter+1)+"."+fakerelpath[cunter])
         strin=inputcheck(rope+"\n"+"If you want to compile list file input the file number or input '0' to mainmenu.>>",inputbaner,"",r"\D",len(fakerelpath))
         if strin=="0":navichk=2
         elif strin=="":fnprocess(fakerelpath[1]);navichk=3
@@ -188,6 +201,7 @@ def compilechk():
         os.system(clearswich);print(banner+"\n"+scibanner);global navichk;global err
         print("Filename : %s\nPathname : %s/\n%s" % (os.path.basename(relpath),os.path.dirname(relpath),rope))
         if err==1:print("{\033[31m%s\033[96m} is Illegal input. Please reinput.>> " % inputselect);err=0
+        print("[Y]yes [N]no [D]delete extras files")
         inputselect=input("Do you want compile this file or Delete extras files? [Y/N/D]: ")
         if inputselect in {"Y","y","Ｙ","ｙ",""}:navichk=5;break
         elif inputselect in {"D","d","Ｄ","ｄ"}:cleanner("know")
@@ -199,6 +213,7 @@ def submenu():
         os.system(clearswich);print(banner+"\n"+scibanner);global navichk;global err
         print("Filename : %s\nPathname : %s/\n%s" % (os.path.basename(relpath),os.path.dirname(relpath),rope))
         if err==1:print("{\033[31m%s\033[96m} is Illegal input. Please reinput.>> " % inputselect);err=0
+        print("[R]recompile [E]exit [D]delete extras files [B]back to mainmenu")
         inputselect=input("Do you want Recompile or Exit? [R/E/D/B]: ")
         if inputselect in {"R","r","Ｒ","ｒ",""}:navichk=5;break
         elif inputselect in {"E","e","Ｅ","ｅ"}:sciexit()
