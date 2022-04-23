@@ -172,7 +172,7 @@ def autochkfile():
     if len(fakerelpath)>0:
         inputbaner=(banner+"\n"+scibanner)
         for cunter in range(len(fakerelpath)):inputbaner=(inputbaner+"\n"+str(cunter+1)+"."+fakerelpath[cunter])
-        strin=inputcheck(rope+"\n"+"If you want to compile list file input the file number or input '0' to mainmenu.>>",inputbaner,"",r"\D",len(fakerelpath))
+        strin=inputcheck(rope+"\n"+"Recently modified files are detected.\nIf you want to compile list file input the file number or input '0' to mainmenu.>>",inputbaner,"",r"\D",len(fakerelpath))
         if strin=="0":navichk=2
         elif strin=="":fnprocess(fakerelpath[1]);navichk=3
         else:fnprocess(fakerelpath[int(strin)-1]);navichk=3
