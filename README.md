@@ -44,4 +44,4 @@ or
 
 <font color=red>Linux</font>:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`python3 TexAutoCompileEX_<language>.py`
+&nbsp;&nbsp;&nbsp;&nbsp;`python3 TexAutoCompileEX_<language>.py`
