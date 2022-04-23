@@ -28,6 +28,7 @@ or
 1. cd to workpath
 2. `mv TexAutoCompileEX_<language>.py TexAutoCompileEX_<language>`
 3. `sudo chmod a+x TexAutoCompileEX_<language>`
+4. Double click to run.
 
 <font color=red>Windows</font>:
 
