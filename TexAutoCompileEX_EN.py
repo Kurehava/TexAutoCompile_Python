@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 ##############################################################################
-#TexAutoCompile LastVersion 0.9.4 new ver for shellscript refactored to python
+#TexAutoCompile LastVersion 0.9.5 new ver for shellscript refactored to python
 #Powered by orikiringi Belonging to KanagawaUniversity MoritaLab
 #Github:https://github.com/orikiringi
 ##############################################################################
