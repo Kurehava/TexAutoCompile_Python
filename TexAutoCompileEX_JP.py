@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-##############################################################################
-#TexAutoCompile LastVersion 0.9.5 new ver for shellscript refactored to python
-#Powered by orikiringi Belonging to KanagawaUniversity MoritaLab
-#Github:https://github.com/orikiringi
-##############################################################################
+####################################################################################
+#TexliveAutoCompile LastVersion 0.9.5 new ver for shellscript refactored to python #
+#Powered by orikiringi Belonging to KanagawaUniversity MoritaLab                   #
+#Github:https://github.com/Kurehava                                                #
+#Affiliated with the GravityWallToolsDevelopmentLAB Project                        #
+####################################################################################
 import os,platform,getpass,time,re,sys,subprocess
 err=0;navichk=1;abspath=relpath=osname=relname=namepath=""
 osname=platform.system()
