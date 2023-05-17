@@ -8,8 +8,8 @@
 import os,platform,getpass,time,re,sys,subprocess
 err=0;navichk=1;abspath=relpath=osname=relname=namepath=""
 osname=platform.system()
-if osname == 'Windows':os.system("mode con cols=79 lines=20");clearswich="cls"
-elif osname == "Linux" or osname == "Darwin":os.system("printf '\033[8;20;79t'");clearswich="clear";#os.system("while sleep 1;do tput sc;tput cup 0 $(($(tput cols)-40));date;tput rc;done&")
+if osname == 'Windows':clearswich="cls";bs='\\'
+elif osname == "Linux" or osname == "Darwin":os.system("printf '\033[8;20;79t'");clearswich="clear";bs='/';#os.system("while sleep 1;do tput sc;tput cup 0 $(($(tput cols)-40));date;tput rc;done&")
 if osname in {"Linux","Darwin"}:
     hispath=str(subprocess.Popen("echo ~",stdout=subprocess.PIPE,shell=True).communicate()).split(",")[0].split("'")[1].split("\\")[0]+"/.tachistory.his"
     hisnpath=str(subprocess.Popen("echo ~",stdout=subprocess.PIPE,shell=True).communicate()).split(",")[0].split("'")[1].split("\\")[0]+"/.tachistory.hisn"
@@ -19,7 +19,7 @@ elif osname == "Windows":
     hisnpath="c:/Users/"+str(subprocess.Popen("whoami",stdout=subprocess.PIPE,shell=True).communicate()).split(",")[0].split("'")[1].replace(r"\n","").replace(r"\r","").split(r"\\")[1]+"/.tachistory.hisn"
     homepath="c:/Users/"+str(subprocess.Popen("whoami",stdout=subprocess.PIPE,shell=True).communicate()).split(",")[0].split("'")[1].replace(r"\n","").replace(r"\r","").split(r"\\")[1]
 sciuser=getpass.getuser()
-scipath=os.path.dirname(os.path.abspath(__file__))+"/"
+scipath=os.path.dirname(os.path.abspath(__file__))+bs
 #relname=os.path.splitext(os.path.basename(__file__))[0]
 rope="------------------------------------------"
 banner=(
@@ -100,14 +100,14 @@ def compile():
         navichk=2
     else:
         if osname == "Windows":
-            os.system('powershell cd "%s" ; platex "%s.tex"' % (abspath,relname))
-            os.system("powershell cd \"%s\" ; pbibtex \"%s.tex\"" % (abspath,relname))
-            os.system("powershell cd \"%s\" ; platex \"%s.tex\" ; platex \"%s.tex\" ; dvipdfmx \"%s.dvi\"" % (abspath,relname,relname,relname))
+            os.system(f"powershell cd '{abspath}' ; platex '{relname}.tex'")
+            os.system(f"powershell cd '{abspath}' ; pbibtex '{relname}.tex'")
+            os.system(f"powershell cd '{abspath}' ; platex '{relname}.tex' ; platex '{relname}.tex' ; dvipdfmx '{relname}.dvi'")
         else:
             os.system("cd \"%s\" && platex \"%s.tex\"" % (abspath,relname))
             os.system("cd \"%s\" && pbibtex \"%s.tex\"" % (abspath,relname))
             os.system("cd \"%s\" && platex \"%s.tex\" && platex \"%s.tex\" && dvipdfmx \"%s.dvi\"" % (abspath,relname,relname,relname))
-        if osname == "Windows":os.system('powershell "%s.pdf"' % (abspath+relname)) 
+        if osname == "Windows":os.system("powershell '%s.pdf'" % (abspath+relname)) 
         elif osname == "Linux":subprocess.call(["xdg-open","%s.pdf" % relname]) #os.system("evince '%s.pdf' 2>/dev/null &" % relname)
         elif osname == "Darwin":subprocess.call(["open","%s.pdf" % relname]) #os.system("open '%s.pdf'" % relname)
         cleanner("know");navichk=6
@@ -213,10 +213,10 @@ def compilechk():
 def submenu():
     while 1:
         os.system(clearswich);print(banner+"\n"+scibanner);global navichk;global err
-        print("Filename : %s\nPathname : %s/\n%s" % (os.path.basename(relpath),os.path.dirname(relpath),rope))
+        print("Filename : %s\nPathname : %s%s\n%s" % (os.path.basename(relpath),os.path.dirname(relpath),bs,rope))
         if err==1:print("{\033[31m%s\033[96m} is Illegal input. Please reinput.>> " % inputselect);err=0
-        print("[R]recompile [E]exit [D]delete extras files [B]back to mainmenu")
-        inputselect=input("Do you want Recompile or Exit? [R/E/D/B]: ")
+        print(f"[R]recompile [E]exit [D]delete extras files\n[B]back to mainmenu  [L]see Compile Log \n{rope}")
+        inputselect=input("Do you want Recompile or Exit? [R/E/D/B/L]: ")
         if inputselect in {"R","r","Ｒ","ｒ",""}:navichk=5;break
         elif inputselect in {"E","e","Ｅ","ｅ"}:sciexit()
         elif inputselect in {"D","d","Ｄ","ｄ"}:cleanner("know")
