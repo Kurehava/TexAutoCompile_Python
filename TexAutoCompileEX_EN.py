@@ -201,7 +201,7 @@ def mainmenu():
 def compilechk():
     while 1:
         os.system(clearswich);print(banner+"\n"+scibanner);global navichk;global err
-        print("Filename : %s\nPathname : %s/\n%s" % (os.path.basename(relpath),os.path.dirname(relpath),rope))
+        print("Filename : %s\nPathname : %s%s\n%s" % (os.path.basename(relpath),os.path.dirname(relpath),bs,rope))
         if err==1:print("{\033[31m%s\033[96m} is Illegal input. Please reinput.>> " % inputselect);err=0
         print("[Y]yes [N]no [D]delete extras files")
         inputselect=input("Do you want compile this file or Delete extras files? [Y/N/D]: ")
