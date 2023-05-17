@@ -23,7 +23,7 @@ scipath=os.path.dirname(os.path.abspath(__file__))+bs
 #relname=os.path.splitext(os.path.basename(__file__))[0]
 rope="------------------------------------------"
 banner=(
-    "\033[41;30mTAC-Python Ver 0.9.3 powered by oriki\033[0;96m\n\033[33m"
+    "\033[41;30mTAC-Python Ver 0.9.4 powered by oriki\033[0;96m\n\033[33m"
     "=============================================================================\n"
     "  _____             _         _         ____                      _ _        \n"
     " |_   _|____  __   / \  _   _| |_ ___  / ___|___  _ __ ___  _ __ (_) | ___   \n"
@@ -107,7 +107,7 @@ def compile():
             os.system("cd \"%s\" && platex \"%s.tex\"" % (abspath,relname))
             os.system("cd \"%s\" && pbibtex \"%s.tex\"" % (abspath,relname))
             os.system("cd \"%s\" && platex \"%s.tex\" && platex \"%s.tex\" && dvipdfmx \"%s.dvi\"" % (abspath,relname,relname,relname))
-        if osname == "Windows":os.system("powershell '%s.pdf'" % (abspath+relname)) 
+        if osname == "Windows":os.system("powershell start '%s.pdf'" % (abspath+relname)) 
         elif osname == "Linux":subprocess.call(["xdg-open","%s.pdf" % relname]) #os.system("evince '%s.pdf' 2>/dev/null &" % relname)
         elif osname == "Darwin":subprocess.call(["open","%s.pdf" % relname]) #os.system("open '%s.pdf'" % relname)
         cleanner("know");navichk=6
